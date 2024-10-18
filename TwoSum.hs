@@ -13,8 +13,14 @@ isTupleJust (a, b) = isJust a && isJust b
 tupleElemIndex :: (Num a, Eq a) => [a] -> (a, a) -> (Maybe Int, Maybe Int)
 tupleElemIndex xs (a, b) = (elemIndex a xs, elemIndex b xs)
 
+sumPairs :: (Num a, Ord a) => [a] -> a -> [(a, a)]
+sumPairs xs target = filter isPositive $ zip xs $ map (target -) xs
+
+indexPairs :: (Num a, Ord a) => [a] -> [(a, a)] -> [(Maybe Int, Maybe Int)]
+indexPairs xs ys = filter isTupleJust $ map (tupleElemIndex xs) ys
+
 twoSum :: (Num a, Ord a) => a -> [a] -> (Maybe Int, Maybe Int)
-twoSum target nums = head $ filter isTupleJust $ map (tupleElemIndex nums) $ filter isPositive $ zip nums $ map (target -) nums
+twoSum target nums = head $ indexPairs nums $ sumPairs nums target
 
 main :: IO()
 main = print (twoSum 9 [2,7,11,15])
